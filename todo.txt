@@ -4,5 +4,6 @@
 - Let user select category and clue value
 - Randomly assign one of the clues to be a Daily Double if its value is $600, $800, or $1000 (or two DD clues for $1200, $1600, and $2000 in Double Jeopardy Round)
 - Implement Daily Double wagering (minimum $5, maximum is player's score or $1000, whichever is greater)
+- Make a leaderboard
 
 Test idea: write test to make sure API is returning 200 status code
