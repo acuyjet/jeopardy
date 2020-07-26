@@ -1,5 +1,4 @@
 - Add check to exclude clues where invalid_count > 0
-- Add "Think!" music to Final Jeopardy
 - Add timer for answers
 - Pull random list of six categories and five clues for each for each round
 - Let user select category and clue value
