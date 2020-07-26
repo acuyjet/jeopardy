@@ -30,6 +30,9 @@ while True:
     # Allow user to break out of loop and answer Final Jeopardy clue
     elif response.upper() == 'Q':
         play_final = input("Before you go, would you like to play Final Jeopardy? Y/N ")
+        while play_final.upper() != 'Y' and play_final.upper() != 'N':
+            play_final = input(
+                "\nI'm sorry, I didn't get that. Would you like to play Final Jeopardy? Y/N ")
         if play_final.upper() == 'Y':
             if player_score <= 0:
                 print(
@@ -48,8 +51,6 @@ while True:
         elif play_final.upper() == 'N':
             print("\nThanks for playing! Your final score is ${}.\n".format(player_score))
             break
-        else:
-            play_final = input("\nI'm sorry, I didn't get that. Would you like to play Final Jeopardy? Y/N ")
     else:
         # If response is incorrect, subtract from score
         try:
