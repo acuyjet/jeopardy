@@ -11,6 +11,9 @@ print("\nRemember to phrase your response in the form of a question!\nEnter 'S' 
 while True:
     # Get clue
     api_response = requests.get('https://jservice.io/api/random').json()
+    # If API returns 'None' for clue value, give another clue
+    if api_response[0]['value'] == None:
+        api_response = requests.get('https://jservice.io/api/random').json()
     print("\n{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(
     ), api_response[0]['value'], api_response[0]['question'].upper()))
     # Prompt user for response
@@ -25,10 +28,12 @@ while True:
         pass
     # Allow user to break out of loop and answer Final Jeopardy clue
     elif response.upper() == 'Q':
-        play_final = input("Before you go, would you like to play Final Jeopardy? Y/N ")
+        play_final = input(
+            "Before you go, would you like to play Final Jeopardy? Y/N ")
         if play_final.upper() == "Y":
             if player_score <= 0:
-                print("\nSorry, you don't have enough to play, and you'll have to leave the stage in shame.\n")
+                print(
+                    "\nSorry, you don't have enough to play, and you'll have to leave the stage in shame.\n")
                 break
         # 	final_wager = input("How much would you like to wager? You have {}".format(player_score))
         #     response = input("{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(), api_response[0]['value'], api_response[0]['question']))
@@ -43,9 +48,10 @@ while True:
         break
     else:
         # If response is incorrect, subtract from score
-        #If API returns 'None' for clue value, catch TypeError
         try:
             player_score -= api_response[0]['value']
-            print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(api_response[0]['answer'].upper(), player_score))
+            print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
+                api_response[0]['answer'].upper(), player_score))
+        # If API returns 'None' for clue value, catch TypeError
         except TypeError:
             print("Whoops, the writers made an error. Let's try another clue.")
