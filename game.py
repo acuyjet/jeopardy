@@ -11,7 +11,7 @@ print("\nRemember to phrase your response in the form of a question!\nEnter 'S' 
 while True:
     # Get clue
     api_response = requests.get('https://jservice.io/api/random').json()
-    # If API returns 'None' for clue value, give another clue
+    # If API returns 'None' for clue value, get another clue
     if api_response[0]['value'] == None:
         api_response = requests.get('https://jservice.io/api/random').json()
     print("\n{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(
@@ -25,12 +25,12 @@ while True:
         print("\nCorrect! You have ${}.\n".format(player_score))
     # User can enter 'S' to skip a clue
     elif response.upper() == 'S':
+        print("The correct response is {}. You have ${}.".format(api_response[0]['answer'].upper(), player_score))
         pass
     # Allow user to break out of loop and answer Final Jeopardy clue
     elif response.upper() == 'Q':
-        play_final = input(
-            "Before you go, would you like to play Final Jeopardy? Y/N ")
-        if play_final.upper() == "Y":
+        play_final = input("Before you go, would you like to play Final Jeopardy? Y/N ")
+        if play_final.upper() == 'Y':
             if player_score <= 0:
                 print(
                     "\nSorry, you don't have enough to play, and you'll have to leave the stage in shame.\n")
@@ -44,8 +44,12 @@ while True:
         # 	else:
         # 		player_score -= final_wager
         # 		print("Oh, sorry! Incorrect. Your final score is ${}.".format(player_score))
-        # 		breakcler
-        break
+        # 		break
+        elif play_final.upper() == 'N':
+            print("\nThanks for playing! Your final score is ${}.\n".format(player_score))
+            break
+        else:
+            play_final = input("\nI'm sorry, I didn't get that. Would you like to play Final Jeopardy? Y/N ")
     else:
         # If response is incorrect, subtract from score
         try:
