@@ -2,6 +2,17 @@ import requests
 
 player_score = 0
 
+def get_clue():
+    api_response = requests.get('https://jservice.io/api/random').json()
+
+    # If API returns 'None' for clue value, get another one
+    if api_response[0]['value'] == None:
+        api_response = requests.get('https://jservice.io/api/random').json()
+    print("\n{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(
+    ), api_response[0]['value'], api_response[0]['question'].upper()))
+
+    return api_response
+
 # Prompt user for name
 player_name = input(
     "Hello! Please enter your name as you want it displayed on the monitor on the front of your podium: ")
@@ -11,32 +22,26 @@ print("\nRemember to phrase your response in the form of a question!\nEnter 'S' 
 while True:
     
     # Get clue
-    api_response = requests.get('https://jservice.io/api/random').json()
-    
-    # If API returns 'None' for clue value, get another clue
-    if api_response[0]['value'] == None:
-        api_response = requests.get('https://jservice.io/api/random').json()
-    print("\n{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(
-    ), api_response[0]['value'], api_response[0]['question'].upper()))
+    clue = get_clue()
     
     # Prompt user for response
     response = input("('S' to skip clue, 'Q' to quit)\n> ")
 
-    if response.upper() == api_response[0]['answer'].upper():
+    if response.upper() == clue[0]['answer'].upper():
         # If response is correct, add to score
-        player_score += api_response[0]['value']
+        player_score += clue[0]['value']
         print("\nCorrect! You have ${}.\n".format(player_score))
     
     # User can enter 'S' to skip a clue
     elif response.upper() == 'S':
         print("The correct response is {}. You have ${}.".format(
-            api_response[0]['answer'].upper(), player_score))
+            clue[0]['answer'].upper(), player_score))
         pass
     
     # Allow user to break out of loop and answer Final Jeopardy clue
     elif response.upper() == 'Q':
         play_final = input(
-            "Before you go, would you like to play Final Jeopardy? Y/N ")
+            "\nBefore you go, would you like to play Final Jeopardy? Y/N ")
     
         while play_final.upper() != 'Y' and play_final.upper() != 'N':
             play_final = input(
@@ -55,7 +60,7 @@ while True:
                 api_response[0]['category']['title']).upper())
             final_wager = int(
                 input("\nHow much would you like to wager? You have ${}. ".format(player_score)))
-            response = input("\n{}\n(doo doo doo doo-doo doo doo doo ...)\n> ".format(
+            response = input("\n{}\n\n(doo doo doo doo-doo doo doo doo ...)\n> ".format(
                 api_response[0]['question'].upper()))
     
             if response.upper() == api_response[0]['answer'].upper():
@@ -66,7 +71,7 @@ while True:
     
             else:
                 player_score -= final_wager
-                print("Oh, sorry! That's incorrect. The correct response is {}. Your final score is ${}.".format(
+                print("\nOh, sorry! That's incorrect. The correct response is {}. Your final score is ${}.".format(
                     api_response[0]['answer'].upper(), player_score))
                 break
     
@@ -77,6 +82,6 @@ while True:
     
     else:
         # If response is incorrect, subtract from score
-        player_score -= api_response[0]['value']
+        player_score -= clue[0]['value']
         print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
-            api_response[0]['answer'].upper(), player_score))
+            clue[0]['answer'].upper(), player_score))
