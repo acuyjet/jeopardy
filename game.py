@@ -1,14 +1,14 @@
 import requests
 import simpleaudio as sa
 
-player_score = 10
+player_score = 10000
 
 
 def get_clue():
     api_response = requests.get('https://jservice.io/api/random').json()
 
-    # If API returns 'None' for clue value, get another one
-    if api_response[0]['value'] == None:
+    # If API returns 'None' for clue value or clue has an invalid_count, get another one
+    if (api_response[0]['value'] == None) or (api_response[0]['invalid_count'] != None):
         api_response = requests.get('https://jservice.io/api/random').json()
     print("\n{} for ${}: {}\n".format(api_response[0]['category']['title'].upper(
     ), api_response[0]['value'], api_response[0]['question'].upper()))
@@ -44,10 +44,10 @@ while True:
 
     if form_of_question:
         # If yes, strip out question word and compare to ['answer']
-            # Function should remove the following words: who, where, what, is, are
-            # Compare rest of string to ['answer']
-                # If matches, score as correct
-                # If doesn't match, score as incorrect
+        # Function should remove the following words: who, where, what, is, are
+        # Compare rest of string to ['answer']
+        # If matches, score as correct
+        # If doesn't match, score as incorrect
 
         # If response matches, score as correct
         if response.upper() == clue[0]['answer'].upper():
@@ -97,7 +97,7 @@ while True:
             think_music = 'think.wav'
             wave_obj = sa.WaveObject.from_wave_file(think_music)
             play_obj = wave_obj.play()
-            response = input("\n{}\n\n(doo doo doo doo-doo doo doo doo ...)\n> ".format(
+            response = input("\n{}\n> ".format(
                 api_response[0]['question'].upper()))
 
             if response.upper() == api_response[0]['answer'].upper():
