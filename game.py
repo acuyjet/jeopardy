@@ -43,6 +43,11 @@ while True:
 
     if form_of_question:
         # If yes, strip out question word and compare to ['answer']
+            # Function should remove the following words: who, where, what, is, are
+            # Compare rest of string to ['answer']
+                # If matches, score as correct
+                # If doesn't match, score as incorrect
+
         # If response matches, score as correct
         if response.upper() == clue[0]['answer'].upper():
             player_score += clue[0]['value']
@@ -53,13 +58,12 @@ while True:
             player_score -= clue[0]['value']
             print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
                 clue[0]['answer'].upper(), player_score))
+
     # If no, score as incorrect
     else:
         player_score -= clue[0]['value']
         print('\nSorry, your response was not in the form of a question! The correct response is {}. You have ${}.\n'.format(
             clue[0]['answer'].upper(), player_score))
-
-    # If response is incorrect, subtract from score
 
     # User can enter 'S' to skip a clue
     if response == 'S':
