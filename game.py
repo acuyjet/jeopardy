@@ -27,14 +27,26 @@ while True:
     # Prompt user for response
     response = input("('S' to skip clue, 'Q' to quit)\n> ")
 
+    # Check to make sure response is in the form of a question
+        # If yes, strip out question word and compare to ['answer']
+            # If response matches, score as correct
+            # If response doesn't match, score as incorrect
+        # If no, score as incorrect
+
     if response.upper() == clue[0]['answer'].upper():
         # If response is correct, add to score
         player_score += clue[0]['value']
         print("\nCorrect! You have ${}.\n".format(player_score))
     
+    # If response is incorrect, subtract from score
+    elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
+        player_score -= clue[0]['value']
+        print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
+            clue[0]['answer'].upper(), player_score))
+
     # User can enter 'S' to skip a clue
     elif response.upper() == 'S':
-        print("The correct response is {}. You have ${}.".format(
+        print("\nThe correct response is {}. You have ${}.".format(
             clue[0]['answer'].upper(), player_score))
         pass
     
@@ -79,9 +91,4 @@ while True:
             print("\nThanks for playing! Your final score is ${}.\n".format(
                 player_score))
             break
-    
-    else:
-        # If response is incorrect, subtract from score
-        player_score -= clue[0]['value']
-        print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
-            clue[0]['answer'].upper(), player_score))
+
