@@ -1,6 +1,7 @@
 import requests
+import simpleaudio as sa
 
-player_score = 0
+player_score = 10
 
 
 def get_clue():
@@ -93,6 +94,9 @@ while True:
                 api_response[0]['category']['title']).upper())
             final_wager = int(
                 input("\nHow much would you like to wager? You have ${}. ".format(player_score)))
+            think_music = 'think.wav'
+            wave_obj = sa.WaveObject.from_wave_file(think_music)
+            play_obj = wave_obj.play()
             response = input("\n{}\n\n(doo doo doo doo-doo doo doo doo ...)\n> ".format(
                 api_response[0]['question'].upper()))
 
