@@ -1,8 +1,10 @@
-- Add check to exclude clues where invalid_count > 0
+- Add validation for FJ wager
+- Refactor and clean up regex
+- Improve answer matching
 - Add timer for answers
 - Pull random list of six categories and five clues for each for each round
 - Let user select category and clue value
-- Randomly assign one of the clues to be a Daily Double if its value is $600, $800, or $1000 (or two DD clues for $1200, $1600, and $2000 in Double Jeopardy Round)
+- Randomly assign one of the clues to be a Daily Double if its value is $600, $800, or $1000 (or two DD clues for $1200, $1600, and $2000 in Double Jeopardy round)
 - Implement Daily Double wagering (minimum $5, maximum is player's score or $1000, whichever is greater)
 - Make a leaderboard
 

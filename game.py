@@ -1,8 +1,8 @@
+import re
 import requests
 import simpleaudio as sa
 
 player_score = 10000
-
 
 def get_clue():
     api_response = requests.get('https://jservice.io/api/random').json()
@@ -26,6 +26,12 @@ def is_question(response):
         return False
 
 
+def play_think_music():
+    think_music = 'think.wav'
+    wave_obj = sa.WaveObject.from_wave_file(think_music)
+    play_obj = wave_obj.play()
+
+
 # Prompt user for name
 player_name = input(
     "Hello! Please enter your name as you want it displayed on the monitor on the front of your podium: ")
@@ -39,20 +45,23 @@ while True:
 
     # Prompt user for response
     response = input("('S' to skip clue, 'Q' to quit)\n> ").upper()
-
     form_of_question = is_question(response)
 
     if form_of_question:
-        # If yes, strip out question word and compare to ['answer']
-        # Function should remove the following words: who, where, what, is, are
-        # Compare rest of string to ['answer']
-        # If matches, score as correct
-        # If doesn't match, score as incorrect
-
-        # If response matches, score as correct
+        # If yes, clean up response by removing the following: what, where, who, is, are, the, a, an, and, ?, &
+        clean_response = re.sub(
+            r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&])', '', response, 0, re.IGNORECASE)
+        # Clean up answer by removing anything inside of parentheses or html tags, the, a, an, and, &, ", backslash, his, her, their
+        clean_answer = re.sub(
+            r'(\bthe\b|\ba\b|\ban\b|\band\b|\bhis\b|her\b|their\b|[?&."\\]|<\s*[^>]*>)', '', clue[0]['answergst'], 0, re.IGNORECASE)
+        # If both match, score as correct
         if response.upper() == clue[0]['answer'].upper():
             player_score += clue[0]['value']
             print("\nCorrect! You have ${}.\n".format(player_score))
+        # If don't match, score as incorrect
+
+        # If response matches, score as correct
+        
 
         # If response doesn't match, score as incorrect
         elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
@@ -94,9 +103,8 @@ while True:
                 api_response[0]['category']['title']).upper())
             final_wager = int(
                 input("\nHow much would you like to wager? You have ${}. ".format(player_score)))
-            think_music = 'think.wav'
-            wave_obj = sa.WaveObject.from_wave_file(think_music)
-            play_obj = wave_obj.play()
+            # Play a tune
+            play_think_music()
             response = input("\n{}\n> ".format(
                 api_response[0]['question'].upper()))
 
