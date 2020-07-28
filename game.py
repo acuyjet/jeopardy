@@ -48,22 +48,19 @@ while True:
     form_of_question = is_question(response)
 
     if form_of_question:
-        # If yes, clean up response by removing the following: what, where, who, is, are, the, a, an, and, ?, &
+        # If yes, clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
         clean_response = re.sub(
-            r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&])', '', response, 0, re.IGNORECASE)
-        # Clean up answer by removing anything inside of parentheses or html tags, the, a, an, and, &, ", backslash, his, her, their
+            r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&\s])', '', response, 0, re.IGNORECASE)
+        # Clean up answer by removing whitespace
         clean_answer = re.sub(
-            r'(\bthe\b|\ba\b|\ban\b|\band\b|\bhis\b|her\b|their\b|[?&."\\]|<\s*[^>]*>)', '', clue[0]['answergst'], 0, re.IGNORECASE)
+            r'([\s])', '', clue[0]['answer'], 0, re.IGNORECASE)
+               
         # If both match, score as correct
-        if response.upper() == clue[0]['answer'].upper():
+        if clean_response.upper() in clean_answer.upper():
             player_score += clue[0]['value']
             print("\nCorrect! You have ${}.\n".format(player_score))
-        # If don't match, score as incorrect
-
-        # If response matches, score as correct
         
-
-        # If response doesn't match, score as incorrect
+        # If don't match, score as incorrect
         elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
             player_score -= clue[0]['value']
             print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(

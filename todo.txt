@@ -1,4 +1,6 @@
+
 - Add validation for FJ wager
+- Create requirements.txt and list dependencies in readme
 - Refactor and clean up regex
 - Improve answer matching
 - Add timer for answers
