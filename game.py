@@ -2,7 +2,7 @@ import re
 import requests
 import simpleaudio as sa
 
-player_score = 10000
+player_score = 0
 
 def get_clue():
     api_response = requests.get('https://jservice.io/api/random').json()
@@ -45,32 +45,6 @@ while True:
 
     # Prompt user for response
     response = input("('S' to skip clue, 'Q' to quit)\n> ").upper()
-    form_of_question = is_question(response)
-
-    if form_of_question:
-        # If yes, clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
-        clean_response = re.sub(
-            r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&\s])', '', response, 0, re.IGNORECASE)
-        # Clean up answer by removing whitespace
-        clean_answer = re.sub(
-            r'([\s])', '', clue[0]['answer'], 0, re.IGNORECASE)
-               
-        # If both match, score as correct
-        if clean_response.upper() in clean_answer.upper():
-            player_score += clue[0]['value']
-            print("\nCorrect! You have ${}.\n".format(player_score))
-        
-        # If don't match, score as incorrect
-        elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
-            player_score -= clue[0]['value']
-            print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
-                clue[0]['answer'].upper(), player_score))
-
-    # If no, score as incorrect
-    else:
-        player_score -= clue[0]['value']
-        print('\nSorry, your response was not in the form of a question! The correct response is {}. You have ${}.\n'.format(
-            clue[0]['answer'].upper(), player_score))
 
     # User can enter 'S' to skip a clue
     if response == 'S':
@@ -99,7 +73,7 @@ while True:
             print("\nYour catgory is: {}".format(
                 api_response[0]['category']['title']).upper())
             final_wager = int(
-                input("\nHow much would you like to wager? You have ${}. ".format(player_score)))
+                input("\nHow much would you like to wager? You have ${}.\n> ".format(player_score)))
             # Play a tune
             play_think_music()
             response = input("\n{}\n> ".format(
@@ -121,3 +95,33 @@ while True:
             print("\nThanks for playing! Your final score is ${}.\n".format(
                 player_score))
             break
+
+
+    form_of_question = is_question(response)
+
+    if form_of_question:
+        # If yes, clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
+        clean_response = re.sub(
+            r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
+        # Clean up answer by removing whitespace
+        clean_answer = re.sub(
+            r'([\s])', '', clue[0]['answer'], 0, re.IGNORECASE)
+               
+        # If both match, score as correct
+        if clean_response.upper() in clean_answer.upper():
+            player_score += clue[0]['value']
+            print("\nCorrect! You have ${}.\n".format(player_score))
+        
+        # If don't match, score as incorrect
+        elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
+            player_score -= clue[0]['value']
+            print('\nOh, sorry! The correct response is {}. You have ${}.\n'.format(
+                clue[0]['answer'].upper(), player_score))
+
+    # If no, score as incorrect
+    else:
+        player_score -= clue[0]['value']
+        print('\nSorry, your response was not in the form of a question! The correct response is {}. You have ${}.\n'.format(
+            clue[0]['answer'].upper(), player_score))
+
+    
