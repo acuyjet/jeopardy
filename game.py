@@ -4,6 +4,7 @@ import simpleaudio as sa
 
 player_score = 0
 
+
 def get_clue():
     api_response = requests.get('https://jservice.io/api/random').json()
 
@@ -79,7 +80,14 @@ while True:
             response = input("\n{}\n> ".format(
                 api_response[0]['question'].upper()))
 
-            if response.upper() == api_response[0]['answer'].upper():
+            # Clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
+            clean_final_response = re.sub(
+                r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
+            # Clean up answer by removing whitespace
+            clean_final_answer = re.sub(
+                r'([\s])', '', api_response[0]['answer'], 0, re.IGNORECASE)
+
+            if clean_final_response.upper() in clean_final_answer.upper():
                 player_score += final_wager
                 print("\nCorrect! Thanks for playing. Your final score is ${}.".format(
                     player_score))
@@ -96,7 +104,6 @@ while True:
                 player_score))
             break
 
-
     form_of_question = is_question(response)
 
     if form_of_question:
@@ -106,12 +113,12 @@ while True:
         # Clean up answer by removing whitespace
         clean_answer = re.sub(
             r'([\s])', '', clue[0]['answer'], 0, re.IGNORECASE)
-               
+
         # If both match, score as correct
         if clean_response.upper() in clean_answer.upper():
             player_score += clue[0]['value']
             print("\nCorrect! You have ${}.\n".format(player_score))
-        
+
         # If don't match, score as incorrect
         elif response.upper() != clue[0]['answer'].upper() and response.upper() != 'S' and response.upper() != 'Q':
             player_score -= clue[0]['value']
@@ -123,5 +130,3 @@ while True:
         player_score -= clue[0]['value']
         print('\nSorry, your response was not in the form of a question! The correct response is {}. You have ${}.\n'.format(
             clue[0]['answer'].upper(), player_score))
-
-    
