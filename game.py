@@ -47,20 +47,21 @@ while True:
     # Prompt user for response
     response = input("('S' to skip clue, 'Q' to quit)\n> ").upper()
 
+    form_of_question = is_question(response)
+
     # User can enter 'S' to skip a clue
     if response == 'S':
         print("\nThe correct response is {}. You have ${}.".format(
             clue[0]['answer'].upper(), player_score))
-        pass
 
     # Allow user to break out of loop and answer Final Jeopardy clue
-    elif response == 'Q':
+    if response == 'Q':
         play_final = input(
             "\nBefore you go, would you like to play Final Jeopardy? Y/N ")
 
         while play_final.upper() != 'Y' and play_final.upper() != 'N':
             play_final = input(
-                "\nI'm sorry, I didn't get that. Would you like to play Final Jeopardy? Y/N ")
+                "I'm sorry, I didn't get that. Would you like to play Final Jeopardy? Y/N ")
 
         if play_final.upper() == 'Y':
 
@@ -73,8 +74,19 @@ while True:
                 'https://jservice.io/api/random').json()
             print("\nYour catgory is: {}".format(
                 api_response[0]['category']['title']).upper())
-            final_wager = int(
-                input("\nHow much would you like to wager? You have ${}.\n> ".format(player_score)))
+            try:
+                final_wager = int(input(
+                    "\nHow much would you like to wager? You have ${}.\n> ".format(player_score)))
+                while (final_wager > player_score) or (final_wager < 0):
+                    final_wager = input(
+                        "\nSorry, that's not a good bet. How much of your ${} would you like to wager?\n> ".format(player_score))
+            except ValueError:
+                print("Sorry, I didn't get that.")
+                final_wager = int(input(
+                    "\nHow much would you like to wager? You have ${}.\n> ".format(player_score)))
+                while (final_wager > player_score) or (final_wager < 0):
+                    final_wager = int(input(
+                        "\nSorry, that's not a good bet. How much of your ${} would you like to wager?\n> ".format(player_score)))
             # Play a tune
             play_think_music()
             response = input("\n{}\n> ".format(
@@ -85,7 +97,7 @@ while True:
                 r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
             # Clean up answer by removing whitespace
             clean_final_answer = re.sub(
-                r'([\s])', '', api_response[0]['answer'], 0, re.IGNORECASE)
+                r'([\s-])', '', api_response[0]['answer'], 0, re.IGNORECASE)
 
             if clean_final_response.upper() in clean_final_answer.upper():
                 player_score += final_wager
@@ -104,15 +116,13 @@ while True:
                 player_score))
             break
 
-    form_of_question = is_question(response)
-
-    if form_of_question:
+    if form_of_question and response != 'S':
         # If yes, clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
         clean_response = re.sub(
             r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
         # Clean up answer by removing whitespace
         clean_answer = re.sub(
-            r'([\s])', '', clue[0]['answer'], 0, re.IGNORECASE)
+            r'([\s-])', '', clue[0]['answer'], 0, re.IGNORECASE)
 
         # If both match, score as correct
         if clean_response.upper() in clean_answer.upper():
@@ -126,7 +136,7 @@ while True:
                 clue[0]['answer'].upper(), player_score))
 
     # If no, score as incorrect
-    else:
+    if not form_of_question:
         player_score -= clue[0]['value']
         print('\nSorry, your response was not in the form of a question! The correct response is {}. You have ${}.\n'.format(
             clue[0]['answer'].upper(), player_score))
