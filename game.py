@@ -94,7 +94,7 @@ while True:
 
             # Clean up player response by removing the following: what, where, who, is, are, the, a, an, and, ?, &, whitespace
             clean_final_response = re.sub(
-                r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
+                r'(\bwhat\b|\bwhere\b|\bwho\b|\bis\b|\bare\b|\bwas\b|\bwere\b|\bthe\b|\ba\b|\ban\b|\band\b|[?&,\s])', '', response, 0, re.IGNORECASE)
             # Clean up answer by removing whitespace
             clean_final_answer = re.sub(
                 r'([\s-])', '', api_response[0]['answer'], 0, re.IGNORECASE)
