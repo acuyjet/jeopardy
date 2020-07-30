@@ -4,6 +4,8 @@ This is Jeopardy!
 
 Project for Code Louisville's Python track.
 
+Requires: requests, simpleaudio  
+
 Alex will give you clues and you'll give him responses.
 
 Please note: This game plays sound.  
